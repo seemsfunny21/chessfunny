@@ -151,8 +151,8 @@ function reset(){if(aiTimer!==null)clearTimeout(aiTimer);aiTimer=null;game=E.sta
 function settings(show){$('settings').hidden=!show;}
 $('gear').addEventListener('click',()=>settings(true));$('gear2').addEventListener('click',()=>settings(true));$('closeSettings').addEventListener('click',()=>settings(false));$('settings').addEventListener('click',e=>{if(e.target===$('settings'))settings(false);});
 $('difficulty').addEventListener('change',e=>{difficulty=Number(e.target.value);try{localStorage.setItem(DKEY,String(difficulty));}catch(_){}draw();});
-$('clearWins').addEventListener('click',()=>{if(confirm('Να μηδενιστούν οι νίκες;')){score={w:0,b:0,draw:0};saveScore();draw();}});
-$('undo').addEventListener('click',undo);$('hint').addEventListener('click',hint);$('new').addEventListener('click',()=>{if(!history.length||finished||confirm('Να ξεκινήσει νέα παρτίδα;'))reset();});
+$('clearWins').addEventListener('click',async()=>{if(await GameDialog.confirm('Να μηδενιστούν οι νίκες;')){score={w:0,b:0,draw:0};saveScore();draw();}});
+$('undo').addEventListener('click',undo);$('hint').addEventListener('click',hint);$('new').addEventListener('click',async()=>{if(!history.length||finished||await GameDialog.confirm('Να ξεκινήσει νέα παρτίδα;'))reset();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')settings(false);});
 load();positions.length||(positions=[sig(game)]);draw();if(!finished&&game.turn==='b')scheduleAI();
 })();
