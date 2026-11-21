@@ -41,6 +41,23 @@ h1{margin:0;font-size:clamp(24px,6vw,35px);letter-spacing:-1px}h1 em{font-style:
 .dialog .wide{margin-top:9px}.promotion{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.promotion button{min-height:62px;border:1px solid #8dcfe8;border-radius:10px;background:#185381;color:white;font-size:42px}
 @media(max-width:360px){.shell{padding:4px}.hero{padding:6px 8px;margin-bottom:5px}.board-card{padding:4px}.board-grid{grid-template-columns:14px 1fr}.piece{font-size:clamp(27px,8vw,44px)}.controls{padding:7px;margin-top:5px;gap:5px}.buttons button{min-height:35px}}
 @media(min-width:900px){.shell{max-width:1200px}.layout{display:grid;grid-template-columns:minmax(0,760px) minmax(290px,1fr);align-items:start;gap:16px}.controls{margin:0;position:sticky;top:12px}.stats{grid-template-columns:1fr}.buttons{grid-template-columns:repeat(3,1fr)}.buttons .primary{grid-column:1/-1}.piece{font-size:clamp(45px,5vw,77px)}}
+
+/* Board-first interface: only the chessboard stays on the game surface.
+   Every command, score and difficulty choice is available in the top gear. */
+@media(min-width:900px){
+ .shell{max-width:1180px}
+ .layout{display:flex;align-items:flex-start;justify-content:center;gap:0}
+ .board-card{width:min(100%,calc(100dvh - 240px),980px)}
+ .piece{font-size:clamp(45px,5vw,92px)}
+}
+.menu-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:8px}
+.menu-status{min-height:26px;margin:4px 0 7px;padding:2px 3px;font-size:12px;color:#d9f6ff!important}
+.menu-ai{margin:3px 0 9px!important;text-align:center;color:#d5e9ff!important;font-size:12px}
+.settings-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
+.dialog .settings-actions .wide{margin:0;min-width:0}
+.dialog #undo:disabled,.dialog #hint:disabled{opacity:.4;cursor:default}
+.dialog #new{background:linear-gradient(145deg,#2195d1,#1360a1);border-color:#8be7ff}
+.menu-note{text-align:center;margin:9px 0 2px!important;font-size:11px!important}
 </style><style id="game-dialog-theme">
 .game-dialog-cover{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:12px;background:#021426d9;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
 .game-dialog-cover[hidden]{display:none!important}
@@ -115,13 +132,22 @@ body>.suite-game-banner{width:min(calc(100% - 24px),720px);margin:12px auto 10px
 </style>
 </head><body>
 <main class="shell"><div class="suite-game-banner"><img src="./hero-banner.svg" width="900" height="300" alt="" aria-hidden="true" decoding="async"></div>
-<header class="hero"><div class="hero-title"><span class="knight">♘</span><h1>Chess<em>Funny</em></h1></div><button id="gear" class="gear" aria-label="Ρυθμίσεις">⚙</button></header>
-<div class="layout"><section class="board-card"><div class="top-score"><span>♚ Υπολογιστής</span><strong id="aiLevel">AI · Κανονικό</strong></div>
+<header class="hero"><div class="hero-title"><span class="knight">♘</span><h1>Chess<em>Funny</em></h1></div><button id="gear" class="gear" type="button" aria-controls="settings" aria-expanded="false" aria-label="Ρυθμίσεις">⚙</button></header>
+<div class="layout"><section class="board-card">
 <div class="board-grid"><div class="ranks"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><div id="board" class="board" role="grid" aria-label="Σκακιέρα 8x8"></div><div class="files"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div></div>
-<div id="status" class="status" role="status" aria-live="polite">Παίζεις με τα λευκά.</div></section>
-<section class="controls"><div class="stats"><div class="pill turn" id="turn">♙ Η σειρά σου</div><div class="pill" id="wins">🏆 Νίκες 0–0</div></div>
-<div class="buttons"><button id="undo" aria-label="Αναίρεση" title="Αναίρεση">↶</button><button id="hint" aria-label="Υπόδειξη" title="Υπόδειξη">💡</button><button id="gear2" aria-label="Ρυθμίσεις" title="Ρυθμίσεις">⚙</button></div></section></div><p class="foot">Χωρίς λογαριασμό · Αυτόματη αποθήκευση · Παίζεις με λευκά</p></main>
-<div class="overlay" id="settings" hidden><div class="dialog" role="dialog" aria-modal="true" aria-label="Ρυθμίσεις"><h2>⚙ Ρυθμίσεις ChessFunny</h2><label for="difficulty">Δυσκολία υπολογιστή</label><select id="difficulty"><option value="1">Εύκολο</option><option value="2">Κανονικό</option><option value="3">Δύσκολο</option></select><p>Πατάς ένα λευκό κομμάτι και μετά μία από τις φωτισμένες νόμιμες θέσεις. Η υπόδειξη προτείνει κίνηση, ενώ η αναίρεση επιστρέφει την τελευταία σειρά.</p><p>Υποστηρίζονται σαχ, ματ, ροκέ, en passant και προαγωγή πιονιού.</p><button id="new" class="wide primary" type="button">↻ Νέα παρτίδα</button><button id="clearWins" class="wide">Μηδενισμός νικών</button><button id="closeSettings" class="wide">Επιστροφή στο παιχνίδι</button></div></div>
+</section></div></main>
+<div class="overlay" id="settings" hidden><div class="dialog" role="dialog" aria-modal="true" aria-label="Ρυθμίσεις" tabindex="-1">
+<h2>⚙ Ρυθμίσεις ChessFunny</h2>
+<div class="menu-stats"><div class="pill turn" id="turn">♙ Η σειρά σου</div><div class="pill" id="wins">🏆 Νίκες 0–0</div></div>
+<p id="status" class="status menu-status" role="status" aria-live="polite">Παίζεις με τα λευκά.</p>
+<p class="menu-ai">♚ Υπολογιστής · <strong id="aiLevel">AI · Κανονικό</strong></p>
+<label for="difficulty">Δυσκολία υπολογιστή</label><select id="difficulty"><option value="1">Εύκολο</option><option value="2">Κανονικό</option><option value="3">Δύσκολο</option></select>
+<div class="settings-actions"><button id="undo" class="wide" type="button">↶ Αναίρεση</button><button id="hint" class="wide" type="button">💡 Υπόδειξη</button></div>
+<button id="new" class="wide primary" type="button">↻ Νέα παρτίδα</button>
+<button id="clearWins" class="wide" type="button">Μηδενισμός νικών</button>
+<p class="menu-note">Η παρτίδα αποθηκεύεται αυτόματα.</p>
+<button id="closeSettings" class="wide" type="button">Επιστροφή στο παιχνίδι</button>
+</div></div>
 <div class="overlay" id="promotion" hidden><div class="dialog" role="dialog" aria-modal="true"><h2>Προαγωγή πιονιού</h2><div id="promotionButtons" class="promotion"></div></div></div>
 <script src="./engine.js?v=1"></script>
 <script>
@@ -155,11 +181,11 @@ function scheduleAI(){if(aiTimer!==null)clearTimeout(aiTimer);thinking=true;draw
 function undo(){if(aiTimer!==null)clearTimeout(aiTimer);aiTimer=null;thinking=false;if(!history.length)return;if(finished){const result=E.status(game),winner=result.winner;if(winner==='w'&&score.w>0)score.w--;else if(winner==='b'&&score.b>0)score.b--;else if(!winner&&score.draw>0)score.draw--;saveScore();}let x=history.pop();while(x.game.turn!=='w'&&history.length)x=history.pop();game=x.game;positions=x.positions;last=x.last;finished=false;selected=-1;targets=[];hintFrom=-1;notice='Αναιρέθηκε η κίνηση.';draw();if(game.turn==='b')scheduleAI();}
 function hint(){if(finished||thinking||game.turn!=='w')return;const m=E.ai(game,2);if(!m)return;selected=m.from;hintFrom=m.from;targets=E.legal(game).filter(x=>x.from===m.from);notice='💡 '+E.name(m.from)+' → '+E.name(m.to);draw();}
 function reset(){if(aiTimer!==null)clearTimeout(aiTimer);aiTimer=null;game=E.start();positions=[sig(game)];history=[];last=null;selected=-1;targets=[];hintFrom=-1;notice='';thinking=false;finished=false;draw();}
-function settings(show){$('settings').hidden=!show;}
-$('gear').addEventListener('click',()=>settings(true));$('gear2').addEventListener('click',()=>settings(true));$('closeSettings').addEventListener('click',()=>settings(false));$('settings').addEventListener('click',e=>{if(e.target===$('settings'))settings(false);});
+function settings(show){$('settings').hidden=!show;$('gear').setAttribute('aria-expanded',String(show));if(show)$('closeSettings').focus();else $('gear').focus();}
+$('gear').addEventListener('click',()=>settings(true));$('closeSettings').addEventListener('click',()=>settings(false));$('settings').addEventListener('click',e=>{if(e.target===$('settings'))settings(false);});
 $('difficulty').addEventListener('change',e=>{difficulty=Number(e.target.value);try{localStorage.setItem(DKEY,String(difficulty));}catch(_){}draw();});
 $('clearWins').addEventListener('click',async()=>{if(await GameDialog.confirm('Να μηδενιστούν οι νίκες;')){score={w:0,b:0,draw:0};saveScore();draw();}});
-$('undo').addEventListener('click',undo);$('hint').addEventListener('click',hint);$('new').addEventListener('click',async()=>{if(!history.length||finished||await GameDialog.confirm('Να ξεκινήσει νέα παρτίδα;')){reset();settings(false);}});
+$('undo').addEventListener('click',()=>{undo();settings(false)});$('hint').addEventListener('click',()=>{hint();settings(false)});$('new').addEventListener('click',async()=>{if(!history.length||finished||await GameDialog.confirm('Να ξεκινήσει νέα παρτίδα;')){reset();settings(false);}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')settings(false);});
 load();positions.length||(positions=[sig(game)]);draw();if(!finished&&game.turn==='b')scheduleAI();
 })();
