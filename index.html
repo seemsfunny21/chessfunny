@@ -107,8 +107,15 @@ h1{margin:0;font-size:clamp(24px,6vw,35px);letter-spacing:-1px}h1 em{font-style:
  window.GameDialog=Object.freeze({confirm,wish,copy});
 })();
 </script>
+<style id="applications-unified-game-banner">
+.suite-game-banner{box-sizing:border-box;display:block;width:min(100%,720px);height:clamp(74px,12dvh,112px);margin:2px auto 10px;overflow:hidden;border-radius:12px;border:1px solid rgba(111,188,255,.4);background:#102e54;box-shadow:0 10px 25px rgba(0,6,26,.32)}
+body>.suite-game-banner{width:min(calc(100% - 24px),720px);margin:12px auto 10px}
+.suite-game-banner img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+@media(min-width:761px){.suite-game-banner{height:150px}}
+</style>
 </head><body>
-<main class="shell"><header class="hero"><div class="hero-title"><span class="knight">♘</span><h1>Chess<em>Funny</em></h1></div><button id="gear" class="gear" aria-label="Ρυθμίσεις">⚙</button></header>
+<main class="shell"><div class="suite-game-banner"><img src="./hero-banner.svg" width="900" height="300" alt="" aria-hidden="true" decoding="async"></div>
+<header class="hero"><div class="hero-title"><span class="knight">♘</span><h1>Chess<em>Funny</em></h1></div><button id="gear" class="gear" aria-label="Ρυθμίσεις">⚙</button></header>
 <div class="layout"><section class="board-card"><div class="top-score"><span>♚ Υπολογιστής</span><strong id="aiLevel">AI · Κανονικό</strong></div>
 <div class="board-grid"><div class="ranks"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><div id="board" class="board" role="grid" aria-label="Σκακιέρα 8x8"></div><div class="files"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div></div>
 <div id="status" class="status" role="status" aria-live="polite">Παίζεις με τα λευκά.</div></section>
